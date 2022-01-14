@@ -4,6 +4,7 @@ import categoryView from './categoryView';
 export default {
     render(contact: Contact) {
         return {
+            id: contact.id,
             name: contact.name,
             email: contact.email,
             phone: contact.phone,

@@ -8,8 +8,18 @@ import contactView from '../views/contactView';
 export default {
   async index(request: Request, response: Response) {
     const contactsRepository = getRepository(Contact);
+    let newOrder = 'asc';
 
-    const contacts = await contactsRepository.find({ relations: ['category'] });
+    if(request.query.orderBy) {
+      newOrder = request.query.orderBy.toString();
+    }
+
+    const contacts = await contactsRepository.find(
+      { 
+        order: {name: newOrder === "desc" ? 'DESC' : 'ASC',},
+        relations: ['category'],
+      },
+    );
 
     return response.json(contactView.renderMany(contacts));
   },
