@@ -27,4 +27,24 @@ export default {
 
     return response.status(200).json(categoryView.render(category));
   },
+
+  async create(request: Request, response: Response) {
+    const { name } = request.body;
+    
+    const categoriesRepository = getRepository(Category);
+
+    if(!name || name == '') {
+      return response.status(404).json({ error: 'Name is required'});
+    }
+
+    const data = {
+      name,
+    }
+
+    const category = categoriesRepository.create(data);
+
+    await categoriesRepository.save(category);
+
+    return response.status(201).json({ message: 'Category created' });
+  }
 };

@@ -47,16 +47,16 @@ export default {
       category_id,
     } = request.body;
 
-    console.log('uai')
     const contactsRepository = getRepository(Contact);
 
     if(!name || name == '') {
       return response.status(404).json({ error: 'Name is required'});
     }
 
-    const contactExists = await contactsRepository.find({
-      where: { email: email}
+    const contactExists = await contactsRepository.findOne({
+      where: {email: email}
     });
+
 
     if(contactExists) {
       return response.status(404).json({ error: 'Contact already exists'});
@@ -66,7 +66,7 @@ export default {
       name,
       email,
       phone,
-      category_id,
+      category: category_id,
     };
 
     const contact = contactsRepository.create(data);

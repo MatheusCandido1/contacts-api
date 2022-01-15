@@ -14,6 +14,7 @@ routes.post('/register', UserController.register);
 // Category
 routes.get('/categories', CategoryController.index);
 routes.get('/categories/:id', CategoryController.show);
+routes.post('/categories', CategoryController.create);
 
 // Contacts
 routes.get('/contacts', ContactController.index);
