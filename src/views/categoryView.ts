@@ -2,8 +2,12 @@ import Category from '../models/Category';
 
 export default {
     render(category: Category) {
+        if(!category) {
+            return null;
+        }
         return {
-            name: category.name,
+            id: category.id,
+            name:category.name,
         };
     },
     renderMany(categories: Category[]) {

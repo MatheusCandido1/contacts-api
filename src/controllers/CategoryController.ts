@@ -2,12 +2,15 @@ import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 
 import Category from '../models/Category';
+import categoryView from '../views/categoryView';
 
 export default {
   async index(request: Request, response: Response) {
     const categoriesRepository = getRepository(Category);
 
-    const categories = await categoriesRepository.find({ relations: ['contacts'] });
+    const categories = await categoriesRepository.find();
+
+    
 
     return response.json(categories);
   },
@@ -18,6 +21,10 @@ export default {
 
     const category = await categoriesRepository.findOne(id);
 
-    return response.json(category);
+    if(!category) {
+      return response.status(404).json({ error: 'Category not found'});
+    }
+
+    return response.status(200).json(categoryView.render(category));
   },
 };

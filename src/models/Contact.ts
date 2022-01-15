@@ -1,5 +1,5 @@
 import {
-  Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn,
+  Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn,
 } from 'typeorm';
 import Category from './Category';
 
@@ -17,9 +17,9 @@ class Contact {
     @Column()
       phone: string;
 
-    @OneToOne(() => Category)
-    @JoinColumn({ name: 'category_id' })
-      category: Category;
+    @ManyToOne(() => Category, (category: Category) => category.contacts, {nullable: true})
+    @JoinColumn({name: 'category_id'})
+      category!: Category;
 }
 
 export default Contact;

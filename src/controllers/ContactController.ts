@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 
-import * as Yup from 'yup';
 import Contact from '../models/Contact';
+import Category from '../models/Category';
 import contactView from '../views/contactView';
 
 export default {
@@ -28,9 +28,15 @@ export default {
     const { id } = request.params;
     const contactsRepository = getRepository(Contact);
 
-    const contact = await contactsRepository.findOne(id);
+    const contact = await contactsRepository.findOne(id, {
+      relations: ['category'],
+    });
 
-    return response.json(contact);
+    if(!contact) {
+      return response.status(404).json({ error: 'Contact not found'});
+    }
+
+    return response.status(200).json(contactView.render(contact));
   },
 
   async create(request: Request, response: Response) {
@@ -41,8 +47,21 @@ export default {
       category_id,
     } = request.body;
 
+    console.log('uai')
     const contactsRepository = getRepository(Contact);
 
+    if(!name || name == '') {
+      return response.status(404).json({ error: 'Name is required'});
+    }
+
+    const contactExists = await contactsRepository.find({
+      where: { email: email}
+    });
+
+    if(contactExists) {
+      return response.status(404).json({ error: 'Contact already exists'});
+    }
+    
     const data = {
       name,
       email,
@@ -50,18 +69,69 @@ export default {
       category_id,
     };
 
-    const schema = Yup.object().shape({
-      name: Yup.string().required(),
-    });
-
-    await schema.validate(data, {
-      abortEarly: false,
-    });
-
     const contact = contactsRepository.create(data);
 
     await contactsRepository.save(contact);
 
-    return response.status(201).json({ message: 'Contact created!' });
+    return response.status(201).json({ message: 'Contact created' });
   },
+
+  async update(request: Request, response: Response) {
+    const { id } = request.params;
+    const {
+      name,
+      email,
+      phone,
+      category_id,
+    } = request.body; 
+    
+    const contactsRepository = getRepository(Contact);
+
+    const contactExists = await contactsRepository.findOne(id);
+
+    if(!contactExists) {
+      return response.status(404).json({ error: 'Contact not found'});
+    }
+
+    if(!name || name == '') {
+      return response.status(404).json({ error: 'Name is required'});
+    }
+
+    const categoryRepository = getRepository(Category);
+
+    const categoryExists = await categoryRepository.findOne({
+      where: { id: category_id}
+    });
+
+    if(!categoryExists) {
+      return response.status(404).json({ error: 'Category not found'});
+    }
+
+
+    await contactsRepository.update({
+      id,
+    }, {
+      name:name,
+      email:email,
+      phone:phone,
+      category: category_id
+    });
+
+    return response.status(202).json({ message: 'Contact updated' });
+  },
+  
+  async destroy(request: Request, response: Response) {
+    const { id } = request.params;
+    const contactsRepository = getRepository(Contact);
+
+    const contact = await contactsRepository.findOne(id);
+
+    if(!contact) {
+      return response.status(404).json({ error: 'Contact not found'});
+    }
+
+    await contactsRepository.delete({id});
+
+    return response.status(202).json({ message: 'Contact removed' });
+  }
 };

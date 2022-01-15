@@ -12,9 +12,7 @@ class Category {
     @Column()
       name: string;
 
-    @OneToMany(() => Contact, (contact) => contact.category, {
-      cascade: ['insert', 'update'],
-    })
+    @OneToMany(() => Contact, (contact) => contact.category)
     @JoinColumn({ name: 'category_id' })
       contacts: Contact[];
 }

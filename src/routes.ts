@@ -18,5 +18,8 @@ routes.get('/categories/:id', CategoryController.show);
 // Contacts
 routes.get('/contacts', ContactController.index);
 routes.get('/contacts/:id', ContactController.show);
+routes.post('/contacts', ContactController.create);
+routes.put('/contacts/:id', ContactController.update);
+routes.delete('/contacts/:id', ContactController.destroy);
 
 export default routes;
