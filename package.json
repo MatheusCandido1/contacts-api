@@ -4,15 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "dev": "npx nodemon --exec ts-node --files src/index.ts",
     "start": "node dist/index.js",
     "typeorm": "npx ts-node ./node_modules/typeorm/cli.js",
     "lint": "eslint . --ext .ts",
     "typeorm:run": "npm run typeorm migration:run",
     "typeorm:migration": "npm run typeorm migration:migrate -n"
-  },
-  "engines": {
-    "node": "14.x"
   },
   "keywords": [],
   "author": "",
