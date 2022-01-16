@@ -10,6 +10,9 @@
     "typeorm:run": "npm run typeorm migration:run",
     "typeorm:migration": "npm run typeorm migration:migrate -n"
   },
+  "engines": {
+    "node": "14.x"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
