@@ -8,7 +8,6 @@ import cors from 'cors';
 import routes from './routes';
 import error from './middlewares/error';
 
-
 const app = express();
 
 dotenv.config();

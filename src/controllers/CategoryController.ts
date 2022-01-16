@@ -10,13 +10,12 @@ export default {
 
     const categories = await categoriesRepository.find();
 
-    
-
     return response.json(categories);
   },
 
   async show(request: Request, response: Response) {
-    const { id } = request.params;
+    const { categoryId } = request.params;
+    const id = categoryId
     const categoriesRepository = getRepository(Category);
 
     const category = await categoriesRepository.findOne(id);

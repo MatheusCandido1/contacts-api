@@ -5,7 +5,7 @@ import UserController from '../../controllers/UserController';
 const routes = Router();
 
 routes.get('/', UserController.index);
-routes.get('/:id', UserController.show);
+routes.get('/:userId', UserController.show);
 routes.post('/', UserController.register);
 
 

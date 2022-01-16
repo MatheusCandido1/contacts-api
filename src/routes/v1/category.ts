@@ -6,7 +6,7 @@ const routes = Router();
 
 // Category
 routes.get('/', CategoryController.index);
-routes.get('/:id', CategoryController.show);
+routes.get('/:categoryId', CategoryController.show);
 routes.post('/', CategoryController.create);
 
 module.exports = routes;

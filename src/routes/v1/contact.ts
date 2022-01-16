@@ -6,9 +6,9 @@ const routes = Router();
 
 // Category
 routes.get('/', ContactController.index);
-routes.get('/:id', ContactController.show);
+routes.get('/:contactId', ContactController.show);
 routes.post('/', ContactController.create);
-routes.put('/:id', ContactController.update);
-routes.delete('/:id', ContactController.destroy);
+routes.put('/:contactId', ContactController.update);
+routes.delete('/:contactId', ContactController.destroy);
 
 module.exports = routes;

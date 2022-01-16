@@ -25,10 +25,10 @@ export default {
   },
 
   async show(request: Request, response: Response) {
-    const { id } = request.params;
+    const { contactId } = request.params;
     const contactsRepository = getRepository(Contact);
 
-    const contact = await contactsRepository.findOne(id, {
+    const contact = await contactsRepository.findOne(contactId, {
       relations: ['category'],
     });
 
@@ -77,7 +77,8 @@ export default {
   },
 
   async update(request: Request, response: Response) {
-    const { id } = request.params;
+    const { contactId } = request.params;
+    const id = contactId
     const {
       name,
       email,
@@ -89,13 +90,18 @@ export default {
 
     const contactExists = await contactsRepository.findOne(id);
 
+
     if(!contactExists) {
       return response.status(404).json({ error: 'Contact not found'});
     }
+    
+    console.log(request.body)
 
     if(!name || name == '') {
       return response.status(404).json({ error: 'Name is required'});
     }
+    
+    console.log(name)
 
     const categoryRepository = getRepository(Category);
 
@@ -121,7 +127,8 @@ export default {
   },
   
   async destroy(request: Request, response: Response) {
-    const { id } = request.params;
+    const { contactId } = request.params;
+    const id = contactId
     const contactsRepository = getRepository(Contact);
 
     const contact = await contactsRepository.findOne(id);
