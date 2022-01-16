@@ -1,7 +1,7 @@
 import { Router } from 'express';
-const category = require('./category.ts');
-const contact = require('./contact.ts');
-const user = require('./user.ts');
+const category = require('./category');
+const contact = require('./contact');
+const user = require('./user');
 
 const router = Router();
 
