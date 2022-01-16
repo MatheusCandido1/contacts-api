@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx nodemon --exec ts-node --files src/index.ts",
-    "start": "node dist/server.js",
+    "start": "node dist/index.js",
     "typeorm": "npx ts-node ./node_modules/typeorm/cli.js",
     "lint": "eslint . --ext .ts",
     "typeorm:run": "npm run typeorm migration:run",
