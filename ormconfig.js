@@ -1,17 +1,13 @@
-{
+module.exports = {
   "type": "mysql",
-  "host": "us-cdbr-east-05.cleardb.net",
-  "port": 3306,
-  "username": "bdb89e49c7db87",
-  "password": "cc24af88",
-  "database": "heroku_76e216278b09e80",
+  "url": process.env.CLEARDB_DATABASE_URL,
   "logging": true,
   "migrationsTableName": "migrations",
   "migrations": [
-      "src/database/migrations/*.ts"
+      "dist/database/migrations/*.js"
   ],
   "entities": [
-      "src/models/*.ts"
+      "dist/models/*.js"
   ],
   "cli": {
       "migrationsDir": "src/database/migrations",
