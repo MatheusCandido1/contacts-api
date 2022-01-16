@@ -1,20 +1,30 @@
-export const swaggerDocument = {
-    "openapi": "3.0.0",
+const devSwagger = [
+  {
+    "url": "http://localhost:3000/api/v1",
+    "description": "Local Server"
+  },
+  {
+    "url": "https://mycontacts-server.herokuapp.com/api/v1",
+    "description": "Production Server"
+  }
+  
+]
+
+const prodSwagger = [
+  {
+    "url": "https://mycontacts-server.herokuapp.com/api/v1",
+    "description": "Production Server"
+  }
+]
+
+module.exports = {
+  "openapi": "3.0.0",
     "info": {
       "title": "MyContacts API",
       "description": "This is a sample server of MyContacts server.",
       "version": "1.0.0"
     },
-    "servers": [
-      {
-        "url": "http://localhost:3000/api/v1",
-        "description": "Local Server"
-      },
-      {
-        "url": "https://mycontacts-server.herokuapp.com/api/v1",
-        "description": "Production Server"
-      }
-    ],
+    "servers": process.env.NODE_ENV == 'dev' ? devSwagger : prodSwagger,
     "tags": {
       "name": "Contacts",
       "description": "All Contact's endpoints"
