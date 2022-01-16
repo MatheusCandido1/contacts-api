@@ -1,26 +1,21 @@
 import { Router } from 'express';
 
-import UserController from './controllers/UserController';
-import CategoryController from './controllers/CategoryController';
-import ContactController from './controllers/ContactController';
+const apiv1 = require('./routes/v1');
+
+import swaggerUi from "swagger-ui-express";
+import YAML from 'yamljs';
+
+var path = require('path');
+var swagger_path =  path.resolve(__dirname,'./swagger.yaml');
+const swaggerDocument = YAML.load(swagger_path);
+
 
 const routes = Router();
 
-// Users
-routes.get('/users', UserController.index);
-routes.get('/users/:id', UserController.show);
-routes.post('/register', UserController.register);
-
-// Category
-routes.get('/categories', CategoryController.index);
-routes.get('/categories/:id', CategoryController.show);
-routes.post('/categories', CategoryController.create);
-
-// Contacts
-routes.get('/contacts', ContactController.index);
-routes.get('/contacts/:id', ContactController.show);
-routes.post('/contacts', ContactController.create);
-routes.put('/contacts/:id', ContactController.update);
-routes.delete('/contacts/:id', ContactController.destroy);
+//Swagger
+routes.use('/', swaggerUi.serve);
+routes.get('/', swaggerUi.setup(swaggerDocument));
+// API V1
+routes.use('/api/v1', apiv1);
 
 export default routes;

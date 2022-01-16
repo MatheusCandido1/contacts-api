@@ -29,7 +29,8 @@ export default {
   },
 
   async show(request: Request, response: Response) {
-    const { id } = request.params;
+    const { userId } = request.params;
+    const id = userId
     const usersRepository = getRepository(User);
 
     const user = await usersRepository.findOne(id);
