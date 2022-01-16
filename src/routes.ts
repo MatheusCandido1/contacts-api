@@ -3,7 +3,8 @@ import { Router } from 'express';
 const apiv1 = require('./routes/v1');
 
 import swaggerUi from "swagger-ui-express";
-import { swaggerDocument } from  './swagger'
+
+const swaggerDocument  = require('./swagger');
 
 const routes = Router();
 
