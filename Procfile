@@ -1,1 +1,1 @@
-web: npx nodemon --exec ts-node --files src/index.ts
+web: node dist/index.ts
