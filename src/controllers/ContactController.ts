@@ -6,17 +6,65 @@ import Category from '../models/Category';
 import contactView from '../views/contactView';
 
 export default {
+  async create(request: Request, response: Response) {
+    const {
+      name,
+      email,
+      phone,
+      category_id,
+    } = request.body;
+
+    const contactsRepository = getRepository(Contact);
+
+    if(!name || name == '') {
+      return response.status(400).json({ error: 'Name is required'});
+    }
+
+    const contactExists = await contactsRepository.findOne({
+      where: {email: email}
+    });
+
+
+    if(contactExists) {
+      return response.status(400).json({ error: 'Contact already exists'});
+    }
+
+    const categoryRepository = getRepository(Category);
+
+    const categoryExists = await categoryRepository.findOne({
+      where: { id: category_id}
+    });
+
+    if(!categoryExists) {
+      return response.status(404).json({ error: 'Category not found'});
+    }
+
+    
+    const data = {
+      name,
+      email,
+      phone,
+      category: category_id,
+    };
+
+    const contact = contactsRepository.create(data);
+
+    await contactsRepository.save(contact);
+
+    return response.status(201).json({ message: 'Contact created' });
+  },
+
   async index(request: Request, response: Response) {
     const contactsRepository = getRepository(Contact);
-    let newOrder = 'asc';
+    let defaultOrder = 'asc';
 
     if(request.query.orderBy) {
-      newOrder = request.query.orderBy.toString();
+      defaultOrder = request.query.orderBy.toString();
     }
 
     const contacts = await contactsRepository.find(
       { 
-        order: {name: newOrder === "desc" ? 'DESC' : 'ASC',},
+        order: {name: defaultOrder === "desc" ? 'DESC' : 'ASC',},
         relations: ['category'],
       },
     );
@@ -39,46 +87,8 @@ export default {
     return response.status(200).json(contactView.render(contact));
   },
 
-  async create(request: Request, response: Response) {
-    const {
-      name,
-      email,
-      phone,
-      category_id,
-    } = request.body;
-
-    const contactsRepository = getRepository(Contact);
-
-    if(!name || name == '') {
-      return response.status(404).json({ error: 'Name is required'});
-    }
-
-    const contactExists = await contactsRepository.findOne({
-      where: {email: email}
-    });
-
-
-    if(contactExists) {
-      return response.status(404).json({ error: 'Contact already exists'});
-    }
-    
-    const data = {
-      name,
-      email,
-      phone,
-      category: category_id,
-    };
-
-    const contact = contactsRepository.create(data);
-
-    await contactsRepository.save(contact);
-
-    return response.status(201).json({ message: 'Contact created' });
-  },
-
   async update(request: Request, response: Response) {
     const { contactId } = request.params;
-    const id = contactId
     const {
       name,
       email,
@@ -88,20 +98,18 @@ export default {
     
     const contactsRepository = getRepository(Contact);
 
-    const contactExists = await contactsRepository.findOne(id);
+    const contactExists = await contactsRepository.findOne(contactId);
 
 
     if(!contactExists) {
       return response.status(404).json({ error: 'Contact not found'});
     }
     
-    console.log(request.body)
 
     if(!name || name == '') {
-      return response.status(404).json({ error: 'Name is required'});
+      return response.status(400).json({ error: 'Name is required'});
     }
     
-    console.log(name)
 
     const categoryRepository = getRepository(Category);
 
@@ -115,7 +123,7 @@ export default {
 
 
     await contactsRepository.update({
-      id,
+      id: contactId,
     }, {
       name:name,
       email:email,
@@ -128,16 +136,15 @@ export default {
   
   async destroy(request: Request, response: Response) {
     const { contactId } = request.params;
-    const id = contactId
     const contactsRepository = getRepository(Contact);
 
-    const contact = await contactsRepository.findOne(id);
+    const contact = await contactsRepository.findOne(contactId);
 
     if(!contact) {
       return response.status(404).json({ error: 'Contact not found'});
     }
 
-    await contactsRepository.delete({id});
+    await contactsRepository.delete({id: contactId});
 
     return response.status(202).json({ message: 'Contact removed' });
   }

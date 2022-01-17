@@ -4,7 +4,7 @@ const devSwagger = [
     "description": "Local Server"
   },
   {
-    "url": "https://mycontacts-server.herokuapp.com/api/v1",
+    "url": "https://mycategories-server.herokuapp.com/api/v1",
     "description": "Production Server"
   }
   
@@ -63,6 +63,17 @@ module.exports = {
                 }
               }
             }
+          },
+          "responses": {
+            "201": {
+              "description": "Successful operation"
+            },
+            "400": {
+              "description": "Validation error"
+            },
+            "404": {
+              "description": "Category not found"
+            },
           }
         },
         "get": {
@@ -114,6 +125,32 @@ module.exports = {
         }
       },
       "/contacts/{contactId}": {
+        "get": {
+          "tags": [
+            "Contacts"
+          ],
+          "summary": "Returns a single contact.",
+          "operationId": "getContact",
+          "parameters": [
+            {
+              "name": "contactId",
+              "in": "path",
+              "description": "Identifier of contact that needs to be returned",
+              "required": true,
+              "schema": {
+                "type": "string"
+              },
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful operation"
+            },
+            "404": {
+              "description": "Contact not found"
+            }
+          }
+        },
         "put": {
           "tags": [
             "Contacts"
@@ -161,7 +198,13 @@ module.exports = {
           "responses": {
             "202": {
               "description": "Successful operation"
-            }
+            },
+            "400": {
+              "description": "Validation error"
+            },
+            "404": {
+              "description": "Category not found"
+            },
           }
         },
         "delete": {
@@ -190,17 +233,87 @@ module.exports = {
             }
           }
         },
+      },
+      "/categories": {
+        "post": {
+          "tags": [
+            "Categories"
+          ],
+          "summary": "Add a new category.",
+          "operationId": "addCategory",
+          "requestBody": {
+            "description": "Category object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Contact name"
+                    },
+                  }
+                } 
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Successful operation"
+            },
+            "400": {
+              "description": "Validation error"
+            }
+          }
+        },
         "get": {
           "tags": [
-            "Contacts"
+            "Categories"
           ],
-          "summary": "Returns a single contact.",
-          "operationId": "getContact",
+          "summary": "Returns a list of categories.",
+          "operationId": "getCategories",
+          "responses": {
+            "200": {
+              "description": "A JSON array of categories",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Category"
+                    }
+                  },
+                  "examples": {
+                    "sample": {
+                      "value": [
+                        {
+                          "id": "089ed185-75aa-11ec-be3a-e4a8dff58e7d",
+                          "name": "Instagram"
+                        },
+                        {
+                          "id": "52ec162f-7418-11ec-9f8b-e4a8dff58e7d",
+                          "name": "WhatsApp"
+                       },
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+      },
+      "/categories/{categoryId}": {
+        "get": {
+          "tags": [
+            "Categories"
+          ],
+          "summary": "Returns a single category.",
+          "operationId": "getCategory",
           "parameters": [
             {
-              "name": "contactId",
+              "name": "categoryId",
               "in": "path",
-              "description": "Identifier of contact that needs to be returned",
+              "description": "Identifier of category that needs to be returned",
               "required": true,
               "schema": {
                 "type": "string"
@@ -212,10 +325,80 @@ module.exports = {
               "description": "Successful operation"
             },
             "404": {
-              "description": "Contact not found"
+              "description": "Category not found"
             }
           }
-        }
+        },
+        "put": {
+          "tags": [
+            "Categories"
+          ],
+          "summary": "Update an existing category.",
+          "operationId": "updateCategory",
+          "parameters": [
+            {
+              "name": "categoryId",
+              "in": "path",
+              "description": "Identifier of category that needs to be updated",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Contact name"
+                    },
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "202": {
+              "description": "Successful operation"
+            },
+            "400": {
+              "description": "Validation error"
+            },
+            "404": {
+              "description": "Category not found"
+            }
+          }
+        },
+        "delete": {
+          "tags": [
+            "Categories"
+          ],
+          "summary": "Delete an existing category.",
+          "operationId": "deleteCategory",
+          "parameters": [
+            {
+              "name": "categoryId",
+              "in": "path",
+              "description": "Identifier of category that needs to be deleted",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "202": {
+              "description": "Successful operation"
+            },
+            "404": {
+              "description": "Category not found"
+            }
+          }
+        },
       }
     },
     "components": {
