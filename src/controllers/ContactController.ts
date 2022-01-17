@@ -5,6 +5,13 @@ import Contact from '../models/Contact';
 import Category from '../models/Category';
 import contactView from '../views/contactView';
 
+interface ContactRequest {
+  name: string,
+  email: string,
+  phone: string,
+  [key: string]: any
+}
+
 export default {
   async create(request: Request, response: Response) {
     const {
@@ -24,28 +31,29 @@ export default {
       where: {email: email}
     });
 
-
     if(contactExists) {
       return response.status(400).json({ error: 'Contact already exists'});
     }
 
-    const categoryRepository = getRepository(Category);
-
-    const categoryExists = await categoryRepository.findOne({
-      where: { id: category_id}
-    });
-
-    if(!categoryExists) {
-      return response.status(404).json({ error: 'Category not found'});
-    }
-
-    
-    const data = {
+    const data: ContactRequest = {
       name,
       email,
       phone,
-      category: category_id,
     };
+
+    if(category_id) {
+      const categoryRepository = getRepository(Category);
+
+      const categoryExists = await categoryRepository.findOne({
+        where: { id: category_id}
+      });
+
+      if(!categoryExists) {
+        return response.status(404).json({ error: 'Category not found'});
+      }
+
+      data.category = category_id
+    }
 
     const contact = contactsRepository.create(data);
 
@@ -95,41 +103,54 @@ export default {
       phone,
       category_id,
     } = request.body; 
-    
+
     const contactsRepository = getRepository(Contact);
 
-    const contactExists = await contactsRepository.findOne(contactId);
+    const contactExists = await contactsRepository.findOne(contactId, {
+      relations: ['category'],
+    });
 
 
     if(!contactExists) {
       return response.status(404).json({ error: 'Contact not found'});
     }
-    
 
     if(!name || name == '') {
       return response.status(400).json({ error: 'Name is required'});
     }
-    
 
-    const categoryRepository = getRepository(Category);
-
-    const categoryExists = await categoryRepository.findOne({
-      where: { id: category_id}
-    });
-
-    if(!categoryExists) {
-      return response.status(404).json({ error: 'Category not found'});
-    }
+    const data: ContactRequest = {
+      name,
+      email,
+      phone,
+    };
 
 
-    await contactsRepository.update({
-      id: contactId,
-    }, {
-      name:name,
-      email:email,
-      phone:phone,
-      category: category_id
-    });
+    if(Boolean(!category_id)) {
+      data.category = null
+    } else {
+        const categoryRepository = getRepository(Category);
+
+        const categoryExists = await categoryRepository.findOne({
+          where: { id: category_id}
+        });
+
+        if(!categoryExists) {
+          return response.status(404).json({ error: 'Category not found'});
+        }
+        if(Boolean(!contactExists.category)) {
+          data.category = category_id;
+        } else {
+          if(contactExists.category.id != category_id) {
+            data.category = category_id;
+          }
+        }
+    } 
+
+    await contactsRepository.update(
+      { id: contactId }, 
+      data
+    ); 
 
     return response.status(202).json({ message: 'Contact updated' });
   },

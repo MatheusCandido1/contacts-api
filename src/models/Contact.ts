@@ -18,7 +18,7 @@ class Contact {
       phone: string;
 
     @ManyToOne(() => Category, (category: Category) => category.contacts, {nullable: true})
-    @JoinColumn({name: 'category_id'})
+    @JoinColumn({name: 'category_id' })
       category!: Category;
 }
 

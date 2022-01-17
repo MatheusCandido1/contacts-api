@@ -13,18 +13,22 @@ export class CreateContactsTable1642038277143 implements MigrationInterface {
         {
           name: 'name',
           type: 'varchar',
+          isNullable: true,
         },
         {
           name: 'email',
           type: 'varchar',
+          isNullable: true,
         },
         {
           name: 'phone',
           type: 'varchar',
+          isNullable: true,
         },
         {
           name: 'category_id',
           type: 'varchar',
+          isNullable: true,
         },
       ],
       foreignKeys: [
@@ -33,7 +37,8 @@ export class CreateContactsTable1642038277143 implements MigrationInterface {
           columnNames: ['category_id'],
           referencedColumnNames: ['id'],
           referencedTableName: 'categories',
-          onDelete: 'CASCADE',
+          onDelete: 'SET NULL',
+          onUpdate: 'SET NULL',
         },
       ],
     }));
